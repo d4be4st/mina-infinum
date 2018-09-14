@@ -1,8 +1,20 @@
+def systemctl?
+  ENV["PATH"].split(":").any? { |dir| File.exists?(File.join(dir, "systemctl")) }
+end
+
+def systemd_running?
+  IO.popen(["systemctl", "is-system-running"], &:read).chomp != "offline"
+end
+
 def background_worker(state)
   ensure!(:background_worker)
   ensure!(:application_name)
   comment %(#{state}ing #{background_worker_name})
-  command %(sudo #{state} #{background_worker_name})
+  if systemctl? && systemd_running?
+    command %(sudo systemctl #{state} #{background_worker_name})
+  else
+    command %(sudo #{state} #{background_worker_name})
+  end
 end
 
 def background_worker_name
