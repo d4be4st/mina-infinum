@@ -5,16 +5,10 @@ task :restart_application do
 end
 
 namespace :background_workers do
-  [:start, :stop, :status].each do |state|
+  [:start, :stop, :status, :restart].each do |state|
     desc "#{state.capitalize}ing background workers"
     task state do
       background_worker(state)
     end
-  end
-
-  desc 'Restarting backgrond workers'
-  task :restart do
-    comment "Restarting #{background_worker_name}"
-    command %(sudo stop #{background_worker_name} > /dev/null 2>&1; sudo start #{background_worker_name})
   end
 end
