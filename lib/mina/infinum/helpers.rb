@@ -3,7 +3,7 @@ def systemctl?
 end
 
 def systemd_running?
-  IO.popen(["systemctl", "is-system-running"], &:read).chomp != "offline"
+  IO.popen(["systemctl", "is-system-running"], &:read).chomp == "online"
 end
 
 def background_worker(state)
